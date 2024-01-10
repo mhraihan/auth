@@ -1,0 +1,16 @@
+{
+  "cSpell.words": [
+    "easymde",
+    "googleusercontent",
+    "hookform",
+    "signin",
+    "simplemde",
+    "tailwindcss",
+    "tanstack"
+  ],
+  "window.zoomLevel": 2.75,
+  "editor.fontSize": 20,
+  "WillLuke.nextjs.addTypesOnSave": true,
+  "WillLuke.nextjs.hasPrompted": true,
+  "typescript.tsdk": "node_modules\\typescript\\lib"
+}
