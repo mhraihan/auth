@@ -6,7 +6,8 @@
     "signin",
     "simplemde",
     "tailwindcss",
-    "tanstack"
+    "tanstack",
+    "trpc"
   ],
   "window.zoomLevel": 2.75,
   "editor.fontSize": 20,
