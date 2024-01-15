@@ -3,7 +3,7 @@ import authConfig from "@/auth.config";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import { db } from "@/lib/db";
 import { getUserById } from "./data/user";
-import { UserRole } from "@prisma/client";
+import { User, UserRole } from "@prisma/client";
 export const {
   handlers: { GET, POST },
   auth,
@@ -20,7 +20,7 @@ export const {
     },
     signIn({ account, user, isNewUser, profile }) {
       console.log("sign in event");
-      // console.log({ account, user, isNewUser, profile });
+      // console.log({ account, user });
     },
     createUser({ user }) {
       console.log("{ createUser: user }");
@@ -36,7 +36,11 @@ export const {
   callbacks: {
     async signIn({ user, account, profile, email, credentials }) {
       console.log("sign in");
-      // console.log(user, account, profile, email, credentials);
+      if (account?.provider !== "credentials") return true;
+      console.log({ user, account });
+      const existingUser = { ...user } as User;
+      // Prevent sign in without email verification
+      if (!existingUser?.emailVerified) return false;
       return true;
     },
     async session({ session, token, newSession, trigger, user }) {
