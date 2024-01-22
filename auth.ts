@@ -92,6 +92,6 @@ export const {
   },
   adapter: PrismaAdapter(db),
   session: { strategy: "jwt" },
-  trustHost: true,
+  // trustHost: true,
   ...authConfig,
 });
