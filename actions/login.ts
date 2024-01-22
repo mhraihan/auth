@@ -10,7 +10,12 @@ import { DEFAULT_LOGIN_REDIRECT } from "@/route";
 import { LoginSchema } from "@/schemas";
 import { AuthError } from "next-auth";
 import * as z from "zod";
-export const login = async (values: z.infer<typeof LoginSchema>) => {
+export const login = async (
+  values: z.infer<typeof LoginSchema>,
+  callbackUrl?: string | null
+) => {
+    console.log(callbackUrl);
+
   const validate = LoginSchema.safeParse(values);
   if (!validate.success) {
     return { error: "Login Success" };
@@ -21,6 +26,7 @@ export const login = async (values: z.infer<typeof LoginSchema>) => {
   if (!existingUser || !existingUser.email || !existingUser.password) {
     return { error: "User does not exists" };
   }
+  // checked password before sent the emil
   if (!existingUser.emailVerified) {
     const verificationToken = await generateVerificationToken(email);
     await sendVerificationEmail(
@@ -67,6 +73,7 @@ export const login = async (values: z.infer<typeof LoginSchema>) => {
     } else {
       const twoFactorToken = await generateTwoFactorToken(existingUser.email);
       await sendTwoFactorEmail(twoFactorToken.email, twoFactorToken.token);
+
       return { twoFactor: true };
     }
   }
@@ -74,7 +81,7 @@ export const login = async (values: z.infer<typeof LoginSchema>) => {
     await signIn("credentials", {
       email,
       password,
-      redirectTo: DEFAULT_LOGIN_REDIRECT,
+      redirectTo: callbackUrl || DEFAULT_LOGIN_REDIRECT,
     });
   } catch (error) {
     if (error instanceof AuthError) {

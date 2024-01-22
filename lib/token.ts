@@ -51,7 +51,7 @@ export const generatePasswordResetToken = async (email: string) => {
 };
 
 export const generateTwoFactorToken = async (email: string) => {
-  const token = randomInt(10_000, 10_000_000).toString();
+  const token = randomInt(100_000, 10_000_000).toString();
   const expires = new Date(new Date().getTime() + 3600 * 1000);
   const existingToken = await getTwoFactorTokenByEmail(email);
   if (!!existingToken) {

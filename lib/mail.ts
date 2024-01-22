@@ -1,20 +1,21 @@
 import { Resend } from "resend";
 const resend = new Resend(process.env.RESEND_API_KEY);
-
+const domain = process.env.NEXT_PUBLIC_APP_URL;
+const from = `${process.env.MAIL_TITLE} <${process.env.MAIL_FROM}>`;
 export const sendVerificationEmail = async (email: string, token: string) => {
-    const confirmLink = `http://localhost:3000/auth/new-verification?token=${token}`;
-    await resend.emails.send({
-      from: "Acme <onboarding@resend.dev>",
-      to: email,
-      subject: "Verification email",
-      html: `<p>Click <a href="${confirmLink}">here</a> to confirm email.</p>`,
-    });
+  const confirmLink = `${domain}/auth/new-verification?token=${token}`;
+  await resend.emails.send({
+    from: `${from}`,
+    to: email,
+    subject: "Verification email",
+    html: `<p>Click <a href="${confirmLink}">here</a> to confirm email.</p>`,
+  });
 };
 
 export const sendPasswordResetEmail = async (email: string, token: string) => {
-  const confirmLink = `http://localhost:3000/auth/new-password?token=${token}`;
+  const confirmLink = `${domain}/auth/new-password?token=${token}`;
   await resend.emails.send({
-    from: "Auth <onboarding@resend.dev>",
+    from: `${from}`,
     to: email,
     subject: "Password reset email",
     html: `<p>Click <a href="${confirmLink}">here</a> to reset password.</p>`,
@@ -23,9 +24,9 @@ export const sendPasswordResetEmail = async (email: string, token: string) => {
 
 export const sendTwoFactorEmail = async (email: string, token: string) => {
   await resend.emails.send({
-    from: "Auth <onboarding@resend.dev>",
+    from: `${from}`,
     to: email,
     subject: "2FA Code",
-    html: `<pYour 2FA Code ${token} </p>`,
+    html: `<p>Your 2FA Code ${token} </p>`,
   });
 };

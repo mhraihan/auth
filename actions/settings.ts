@@ -12,6 +12,7 @@ import { signOut, update } from "@/auth";
 
 export const settings = async (values: z.infer<typeof SettingsSchema>) => {
   const user = await currentUser();
+
   if (!user) {
     return { error: "Unauthorized" };
   }
@@ -68,7 +69,7 @@ export const settings = async (values: z.infer<typeof SettingsSchema>) => {
     await signOut({
       redirectTo: "/auth/notify",
     });
-    
+
     return { success: "verification email sent" };
   }
   // update session data
