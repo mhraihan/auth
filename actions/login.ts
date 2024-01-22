@@ -8,6 +8,7 @@ import { sendTwoFactorEmail, sendVerificationEmail } from "@/lib/mail";
 import { generateTwoFactorToken, generateVerificationToken } from "@/lib/token";
 import { DEFAULT_LOGIN_REDIRECT } from "@/route";
 import { LoginSchema } from "@/schemas";
+import { compare } from "bcryptjs";
 import { AuthError } from "next-auth";
 import * as z from "zod";
 export const login = async (
@@ -35,6 +36,11 @@ export const login = async (
     );
 
     return { success: "Confirmation email sent" };
+  }
+  // compare password before login
+  const passwordMatch = await compare(password, existingUser.password);
+  if (!passwordMatch) {
+    return { error: "Invalid credentials!" };
   }
   if (existingUser.isTwoFactorEnabled && existingUser.email) {
     if (code) {
