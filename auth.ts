@@ -2,14 +2,15 @@ import NextAuth from "next-auth";
 import authConfig from "@/auth.config";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import { db } from "@/lib/db";
-import { getUserById } from "./data/user";
 import { User, UserRole } from "@prisma/client";
 import { getTwoFactorConfirmationByUserId } from "./data/two-factor-confirmation";
+import { getUserWithAccountById } from "@/data/account";
 export const {
   handlers: { GET, POST },
   auth,
   signIn,
   signOut,
+  update,
 } = NextAuth({
   pages: {
     signIn: "/auth/login",
@@ -69,15 +70,21 @@ export const {
       }
       if (session.user) {
         session.user.isTwoFactorEnabled = token.isTwoFactorEnabled as boolean;
+        session.user.name = token.name;
+        session.user.email = token.email;
+        session.user.isOauth = token.isOauth as boolean;
       }
       return session;
     },
     async jwt({ token, account, user, profile, session, trigger }) {
       // console.log("jwt");
-      // console.log({token} );
+      // console.log({ token });
       if (!token.sub) return token;
-      const existingUser = await getUserById(token.sub);
+      const existingUser = await getUserWithAccountById(token.sub);
       if (!existingUser) return token;
+      token.isOauth = !!existingUser?.accounts.length;
+      token.name = existingUser.name;
+      token.email = existingUser.email;
       token.role = existingUser.role;
       token.isTwoFactorEnabled = existingUser.isTwoFactorEnabled ?? false;
       return token;
