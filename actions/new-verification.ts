@@ -18,16 +18,14 @@ export const newVerification = async (token: string) => {
   if (!user) {
     return { error: "Email does not exists!" };
   }
-  Promise.all([
-    db.user.update({
-      where: { id: user?.id },
-      data: {
-        // need to update email field to, suppose user change the email
-        emailVerified: new Date(),
-        email: user?.email, 
-      },
-    }),
-    db.verificationToken.delete({ where: { id: existingToken.id } }),
-  ]);
+  await db.user.update({
+    where: { id: user?.id },
+    data: {
+      // need to update email field to, suppose user change the email
+      emailVerified: new Date(),
+      email: user?.email,
+    },
+  }),
+    await db.verificationToken.delete({ where: { id: existingToken.id } });
   return { success: "Email verified!" };
 };
